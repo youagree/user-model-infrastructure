@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  ru.unit_techno.user.model.impl.config.UserModelConfig
+  
