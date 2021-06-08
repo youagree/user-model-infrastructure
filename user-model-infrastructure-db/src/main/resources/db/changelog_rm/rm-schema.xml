@@ -1,0 +1,77 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Tables -->
+    <changeSet id="create-sequence-car" author="uberdev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="user_id_seq"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="user_id_seq" incrementBy="50"/>
+    </changeSet>
+
+    <changeSet id="create-table-cars" author="uberdev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+
+        <!-- ТАБЛИЦА USERS -->
+        <createTable tableName="users">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="login" type="VARCHAR"/>
+            <column name="password" type="VARCHAR"/>
+            <column name="role_type" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-sequence-role_id" author="uberdev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sequenceExists sequenceName="role_id_seq"/>
+            </not>
+        </preConditions>
+        <createSequence sequenceName="role_id_seq" incrementBy="50"/>
+    </changeSet>
+
+    <changeSet id="create-table-roles" author="uberdev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="roles"/>
+            </not>
+        </preConditions>
+
+        <!-- ТАБЛИЦА ROLES -->
+        <createTable tableName="roles">
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_type" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Foreign keys & indexes -->
+    <changeSet author="ESV" id="cars-createIndex">
+        <createIndex indexName="idx_role_type_id" tableName="users">
+            <column name="role_type"/>
+        </createIndex>
+        <comment>cars table create fk index</comment>
+    </changeSet>
+
+    <changeSet author="uberdev" id="create-foreign-key-users">
+        <addForeignKeyConstraint baseColumnNames="role_type"
+                                 baseTableName="users"
+                                 constraintName="fk_users_role_id"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="role_id"
+                                 referencedTableName="roles"/>
+    </changeSet>
+
+</databaseChangeLog>

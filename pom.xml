@@ -5,6 +5,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>user-model-infrastructure-impl</module>
+        <module>user-model-infrastructure-db</module>
     </modules>
 
     <groupId>ru.unit.techno</groupId>
