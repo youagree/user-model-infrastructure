@@ -5,16 +5,7 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 
@@ -32,6 +23,8 @@ public class UserEntity implements UserDetails {
     private String email;
     @Column(name = "password")
     private String password;
+    @Column(name = "isExpired")
+    private boolean isExpired;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_type", referencedColumnName = "role_id")
     private Set<RoleEntity> roleType;
