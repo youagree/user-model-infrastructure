@@ -5,7 +5,16 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Set;
 
@@ -23,7 +32,11 @@ public class UserEntity implements UserDetails {
     private String email;
     @Column(name = "password")
     private String password;
-    @Column(name = "isExpired")
+    @Column(name = "activation_code")
+    private String activationCode;
+    @Column(name = "is_active")
+    private boolean isActive;
+    @Column(name = "is_expired")
     private boolean isExpired;
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_type", referencedColumnName = "role_id")

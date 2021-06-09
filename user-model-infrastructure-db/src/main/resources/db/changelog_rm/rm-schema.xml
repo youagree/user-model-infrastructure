@@ -27,7 +27,9 @@
             </column>
             <column name="login" type="VARCHAR"/>
             <column name="password" type="VARCHAR"/>
-            <column name="isExpired" type="BOOLEAN"/>
+            <column name="is_expired" type="BOOLEAN"/>
+            <column name="activation_code" type="VARCHAR"/>
+            <column name="is_active" type="BOOLEAN"/>
             <column name="role_type" type="BIGINT"/>
         </createTable>
     </changeSet>
