@@ -1,13 +1,18 @@
 
 package ru.unit_techno.user.model.impl.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
+@Data
+@Service
+@RequiredArgsConstructor
 public class MailService {
-    @Autowired
+
     private JavaMailSender mailSender;
 
     @Value("${user-model.mail.username}")
