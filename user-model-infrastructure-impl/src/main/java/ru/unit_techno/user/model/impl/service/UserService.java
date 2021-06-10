@@ -2,17 +2,23 @@ package ru.unit_techno.user.model.impl.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.unit_techno.user.model.impl.dto.UserDto;
+import ru.unit_techno.user.model.impl.entity.RoleEntity;
 import ru.unit_techno.user.model.impl.entity.UserEntity;
-import ru.unit_techno.user.model.impl.entity.enums.RoleType;
 import ru.unit_techno.user.model.impl.mapper.UserMapper;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
 
 import javax.persistence.EntityExistsException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -23,18 +29,18 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final MailService mailService;
-
-    //TODO прикрутить стандартное назначение роли, разобраться как назначать роль если там Set
-    public void createUser(String email, String password, RoleType roleType) {
-        UserEntity entity = new UserEntity().setEmail(email).setPassword(password);
-        userRepository.save(entity);
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        userRepository.findByEmail(s);
+        UserEntity user = userRepository.findByEmail(s);
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
 
-        return null;
+        for (RoleEntity role : user.getRoleType()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleType().getValue()));
+        }
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 
     public UserDto addUser(UserDto userDto) {
@@ -48,6 +54,7 @@ public class UserService implements UserDetailsService {
         UserEntity createdUser = userMapper.toDomain(userDto);
         createdUser.setActive(false);
         createdUser.setActivationCode(UUID.randomUUID().toString());
+        createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         userRepository.save(createdUser);
 

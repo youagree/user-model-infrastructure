@@ -9,8 +9,7 @@ import ru.unit_techno.user.model.impl.entity.UserEntity;
 @Mapper(uses = RoleMapper.class)
 public interface UserMapper {
 
-    @Mapping(target = "activationCode", ignore = true)
-    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "password", ignore = true)
     UserEntity toDomain(UserDto userDto);
 
     UserDto toDto(UserEntity entity);
