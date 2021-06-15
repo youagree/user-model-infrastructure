@@ -22,18 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers(WHITE_LIST).permitAll()
-                .anyRequest().authenticated()
+        http.authorizeRequests()
+                .antMatchers("/**").hasAnyRole()
+                .anyRequest().permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .rememberMe()
-                .and()
-                .logout()
+//                .loginPage("/login")
+//                .loginProcessingUrl("/authenticateTheUser")
                 .permitAll();
     }
 

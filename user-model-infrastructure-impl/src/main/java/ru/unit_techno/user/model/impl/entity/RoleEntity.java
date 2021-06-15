@@ -14,6 +14,7 @@ public class RoleEntity implements GrantedAuthority {
 
     @Id
     @Column(name = "role_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_id_seq")
     private Long roleId;
     @Column(name = "role_type")
     @Enumerated(EnumType.STRING)

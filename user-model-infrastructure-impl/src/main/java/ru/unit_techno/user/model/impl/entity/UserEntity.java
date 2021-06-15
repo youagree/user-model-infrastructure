@@ -29,7 +29,7 @@ public class UserEntity implements UserDetails {
     private boolean isActive;
     @Column(name = "is_expired")
     private boolean isExpired;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<RoleEntity> roleType;
 
     @Override
