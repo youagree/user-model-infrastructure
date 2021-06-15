@@ -30,7 +30,6 @@
             <column name="is_expired" type="BOOLEAN"/>
             <column name="activation_code" type="VARCHAR"/>
             <column name="is_active" type="BOOLEAN"/>
-            <column name="role_type" type="BIGINT"/>
         </createTable>
     </changeSet>
 
@@ -60,22 +59,12 @@
         </createTable>
     </changeSet>
 
-    <!-- Foreign keys & indexes -->
-    <changeSet author="ESV" id="cars-createIndex">
-        <createIndex indexName="idx_role_type_id" tableName="users">
-            <column name="role_type"/>
-        </createIndex>
-        <comment>cars table create fk index</comment>
-    </changeSet>
-
-    <changeSet author="uberdev" id="create-foreign-key-users">
-        <addForeignKeyConstraint baseColumnNames="role_type"
-                                 baseTableName="users"
-                                 constraintName="fk_users_role_id"
-                                 onDelete="NO ACTION"
-                                 onUpdate="NO ACTION"
-                                 referencedColumnNames="role_id"
-                                 referencedTableName="roles"/>
+    <changeSet author="uberdev" id="create-foreign-key-user_id">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="roles"
+                                 constraintName="fk_user_id"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"/>
     </changeSet>
 
 </databaseChangeLog>

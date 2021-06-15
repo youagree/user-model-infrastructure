@@ -4,7 +4,15 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import ru.unit_techno.user.model.impl.entity.enums.RoleType;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 @Data
 @Entity
@@ -19,9 +27,6 @@ public class RoleEntity implements GrantedAuthority {
     @Column(name = "role_type")
     @Enumerated(EnumType.STRING)
     private RoleType roleType;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
 
     @Override
     public String getAuthority() {

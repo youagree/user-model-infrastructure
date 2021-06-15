@@ -15,8 +15,6 @@ import ru.unit_techno.user.model.impl.service.UserService;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] WHITE_LIST = {"/", "/registration", "/static/**", "/activate/*"};
-
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
@@ -27,8 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
-//                .loginPage("/login")
-//                .loginProcessingUrl("/authenticateTheUser")
                 .permitAll();
     }
 
