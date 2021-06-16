@@ -30,6 +30,7 @@
             <column name="is_expired" type="BOOLEAN"/>
             <column name="activation_code" type="VARCHAR"/>
             <column name="is_active" type="BOOLEAN"/>
+            <column name="created" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.unit_techno.user.model.impl.dto.DeleteUserDto;
 import ru.unit_techno.user.model.impl.dto.UserDto;
 import ru.unit_techno.user.model.impl.entity.RoleEntity;
 import ru.unit_techno.user.model.impl.entity.UserEntity;
@@ -17,6 +18,7 @@ import ru.unit_techno.user.model.impl.exception.LoginAlreadyExistException;
 import ru.unit_techno.user.model.impl.mapper.UserMapper;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -60,6 +62,15 @@ public class UserService implements UserDetailsService {
 
         sendMessage(createdUser);
         return userMapper.toDto(createdUser);
+    }
+
+    @Transactional
+    public void deleteUser(DeleteUserDto deleteUserDto) {
+        if (userRepository.findByEmail(deleteUserDto.getUserLogin()) != null) {
+            userRepository.deleteByEmail(deleteUserDto.getUserLogin());
+        } else {
+            throw new EntityNotFoundException("This user was not found");
+        }
     }
 
     private void sendMessage(UserEntity user) {
