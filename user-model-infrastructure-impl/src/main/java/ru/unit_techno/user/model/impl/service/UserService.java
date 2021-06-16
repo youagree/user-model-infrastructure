@@ -45,6 +45,7 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 
+    @Transactional
     public UserDto addUser(UserDto userDto) {
         checkRootUserExist();
         UserEntity byEmail = userRepository.findByEmail(userDto.getEmail());
@@ -58,9 +59,9 @@ public class UserService implements UserDetailsService {
         createdUser.setActivationCode(UUID.randomUUID().toString());
         createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        userRepository.save(createdUser);
-
         sendMessage(createdUser);
+        //save after success sending, if not success try AGAIN
+        userRepository.save(createdUser);
         return userMapper.toDto(createdUser);
     }
 
@@ -78,10 +79,9 @@ public class UserService implements UserDetailsService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Service. Please, visit next link: http://%s/activate/%s",
+                            "Welcome to Service. Your activation code is: %s",
                     user.getUsername(),
-                    //поменять на наш урл
-                    "test-url",
+                    //TODO поменять на 6 цифр
                     user.getActivationCode()
             );
             mailService.send(user.getEmail(), "Activation code", message);
