@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.unit_techno.user.model.impl.dto.UserDto;
 import ru.unit_techno.user.model.impl.entity.RoleEntity;
 import ru.unit_techno.user.model.impl.entity.UserEntity;
+import ru.unit_techno.user.model.impl.exception.LoginAlreadyExistException;
 import ru.unit_techno.user.model.impl.mapper.UserMapper;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
 
-import javax.persistence.EntityExistsException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -48,7 +48,7 @@ public class UserService implements UserDetailsService {
         UserEntity byEmail = userRepository.findByEmail(userDto.getEmail());
 
         if (byEmail != null) {
-            throw new EntityExistsException("This email is already be used");
+            throw new LoginAlreadyExistException("user with this email is already be used");
         }
 
         UserEntity createdUser = userMapper.toDomain(userDto);
