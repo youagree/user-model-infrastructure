@@ -42,7 +42,7 @@ public class UserService implements UserDetailsService {
         for (RoleEntity role : user.getRoleType()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getRoleType().getValue()));
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword().toLowerCase(), grantedAuthorities);
     }
 
     @Transactional
