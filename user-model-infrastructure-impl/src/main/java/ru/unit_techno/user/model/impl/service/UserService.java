@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.unit_techno.user.model.impl.dto.ActivateDto;
 import ru.unit_techno.user.model.impl.dto.DeleteUserDto;
 import ru.unit_techno.user.model.impl.dto.UserDto;
 import ru.unit_techno.user.model.impl.entity.RoleEntity;
@@ -20,6 +21,7 @@ import ru.unit_techno.user.model.impl.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -95,5 +97,17 @@ public class UserService implements UserDetailsService {
             rootUser.setExpired(true);
             userRepository.save(rootUser);
         }
+    }
+
+    public void activateUser(ActivateDto activateDto) {
+        userRepository.findByActivationCode(activateDto.getActivationCode())
+                .ifPresentOrElse(userEntity -> {
+                            userEntity.setActive(true);
+                            userEntity.setPassword(passwordEncoder.encode(activateDto.getPassword().toLowerCase(Locale.ROOT)));
+                        },
+                        () -> {
+                            throw new EntityNotFoundException("user not exist");
+                        }
+                );
     }
 }
