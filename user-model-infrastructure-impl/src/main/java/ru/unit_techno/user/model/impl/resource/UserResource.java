@@ -3,14 +3,10 @@ package ru.unit_techno.user.model.impl.resource;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.unit_techno.user.model.impl.dto.ActivateDto;
 import ru.unit_techno.user.model.impl.dto.DeleteUserDto;
+import ru.unit_techno.user.model.impl.dto.RestorePasswordDto;
 import ru.unit_techno.user.model.impl.dto.UserDto;
 import ru.unit_techno.user.model.impl.service.UserService;
 
@@ -36,5 +32,10 @@ public class UserResource {
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@RequestBody DeleteUserDto deleteUserDto) {
         userService.deleteUser(deleteUserDto);
+    }
+
+    @PostMapping
+    public void restoreUser(@RequestBody RestorePasswordDto restorePasswordDto) {
+        userService.restoreUser(restorePasswordDto);
     }
 }
