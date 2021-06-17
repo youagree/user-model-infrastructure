@@ -11,6 +11,7 @@ import ru.unit_techno.user.model.impl.entity.UserEntity;
 import ru.unit_techno.user.model.impl.entity.enums.RoleType;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
@@ -32,6 +33,7 @@ public class InitTempUserJob implements CommandLineRunner {
                             .setPassword(encoder.encode("user1111"))
                             .setActive(true)
                             .setRoleType(Set.of(entity))
+                            .setCreated(new Timestamp(System.currentTimeMillis()))
                     //TODO expire date
             );
         }

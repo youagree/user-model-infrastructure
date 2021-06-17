@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.unit_techno.user.model.impl.dto.DeleteUserDto;
 import ru.unit_techno.user.model.impl.dto.UserDto;
 import ru.unit_techno.user.model.impl.entity.RoleEntity;
 import ru.unit_techno.user.model.impl.entity.UserEntity;
@@ -17,6 +18,7 @@ import ru.unit_techno.user.model.impl.exception.LoginAlreadyExistException;
 import ru.unit_techno.user.model.impl.mapper.UserMapper;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -43,6 +45,7 @@ public class UserService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 
+    @Transactional
     public UserDto addUser(UserDto userDto) {
         checkRootUserExist();
         UserEntity byEmail = userRepository.findByEmail(userDto.getEmail());
@@ -56,10 +59,19 @@ public class UserService implements UserDetailsService {
         createdUser.setActivationCode(UUID.randomUUID().toString());
         createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        userRepository.save(createdUser);
-
         sendMessage(createdUser);
+        //save after success sending, if not success try AGAIN
+        userRepository.save(createdUser);
         return userMapper.toDto(createdUser);
+    }
+
+    @Transactional
+    public void deleteUser(DeleteUserDto deleteUserDto) {
+        if (userRepository.findByEmail(deleteUserDto.getUserLogin()) != null) {
+            userRepository.deleteByEmail(deleteUserDto.getUserLogin());
+        } else {
+            throw new EntityNotFoundException("This user was not found");
+        }
     }
 
     private void sendMessage(UserEntity user) {
@@ -67,10 +79,9 @@ public class UserService implements UserDetailsService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Service. Please, visit next link: http://%s/activate/%s",
+                            "Welcome to Service. Your activation code is: %s",
                     user.getUsername(),
-                    //поменять на наш урл
-                    "test-url",
+                    //TODO поменять на 6 цифр
                     user.getActivationCode()
             );
             mailService.send(user.getEmail(), "Activation code", message);

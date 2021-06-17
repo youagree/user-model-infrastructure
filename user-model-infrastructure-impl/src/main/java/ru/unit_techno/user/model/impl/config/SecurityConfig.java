@@ -18,14 +18,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
+    protected static final String[] SECURITY_SWAGGER_ANT_MATCHERS = {"/v2/api-docs", "/swagger-resources/**", "/documentation/**", "/swagger-ui.html"};
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/**").hasAnyRole()
-                .anyRequest().permitAll()
+                .antMatchers("/**").permitAll()
+                .antMatchers(SECURITY_SWAGGER_ANT_MATCHERS).permitAll()
                 .and()
                 .formLogin()
-                .permitAll();
+                .permitAll()
+                .and()
+                .csrf().disable();
     }
 
     @Override
