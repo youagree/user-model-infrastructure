@@ -21,6 +21,7 @@ import ru.unit_techno.user.model.impl.mapper.UserMapper;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -61,6 +62,7 @@ public class UserService implements UserDetailsService {
         createdUser.setActive(false);
         createdUser.setActivationCode(UUID.randomUUID().toString());
         createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        createdUser.setCreated(new Timestamp(System.currentTimeMillis()));
 
         sendMessage(createdUser.getEmail(), createdUser.getActivationCode());
         //save after success sending, if not success try AGAIN
