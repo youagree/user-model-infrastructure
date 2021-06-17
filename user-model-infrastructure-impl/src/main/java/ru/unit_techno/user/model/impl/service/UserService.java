@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.unit_techno.user.model.impl.dto.ActivateDto;
 import ru.unit_techno.user.model.impl.dto.DeleteUserDto;
+import ru.unit_techno.user.model.impl.dto.RestorePasswordDto;
 import ru.unit_techno.user.model.impl.dto.UserDto;
 import ru.unit_techno.user.model.impl.entity.RoleEntity;
 import ru.unit_techno.user.model.impl.entity.UserEntity;
@@ -61,7 +62,7 @@ public class UserService implements UserDetailsService {
         createdUser.setActivationCode(UUID.randomUUID().toString());
         createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        sendMessage(createdUser);
+        sendMessage(createdUser.getEmail(), createdUser.getActivationCode());
         //save after success sending, if not success try AGAIN
         userRepository.save(createdUser);
         return userMapper.toDto(createdUser);
@@ -76,17 +77,24 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    private void sendMessage(UserEntity user) {
+    @Transactional
+    public void restoreUser(RestorePasswordDto restorePasswordDto) {
+        String activationCode = UUID.randomUUID().toString();
+        userRepository.updateActivationCode(activationCode, restorePasswordDto.getEmail());
+        sendMessage(restorePasswordDto.getEmail(), activationCode);
+    }
+
+    private void sendMessage(String email, String activationCode) {
         //TODO обернуть в трай
-        if (user.getEmail() != null) {
+        if (email != null) {
             String message = String.format(
                     "Hello, %s! \n" +
                             "Welcome to Service. Your activation code is: %s",
-                    user.getUsername(),
+                    email,
                     //TODO поменять на 6 цифр
-                    user.getActivationCode()
+                    activationCode
             );
-            mailService.send(user.getEmail(), "Activation code", message);
+            mailService.send(email, "Activation code", message);
         }
     }
 
@@ -104,6 +112,7 @@ public class UserService implements UserDetailsService {
                 .ifPresentOrElse(userEntity -> {
                             userEntity.setActive(true);
                             userEntity.setPassword(passwordEncoder.encode(activateDto.getPassword().toLowerCase(Locale.ROOT)));
+                            userRepository.save(userEntity);
                         },
                         () -> {
                             throw new EntityNotFoundException("user not exist");
