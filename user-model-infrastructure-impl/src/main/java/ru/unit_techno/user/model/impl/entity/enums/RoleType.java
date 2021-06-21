@@ -4,8 +4,9 @@ import lombok.Getter;
 
 public enum RoleType {
     ROOT("ROOT"),
+    SPECTATOR("SPECTATOR"),
     ADMIN("ADMIN"),
-    SUPER_ADMIN("UBER DEV ROOT");
+    SUPER_ADMIN("SUPER_ADMIN");
 
     @Getter
     private final String value;

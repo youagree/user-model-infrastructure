@@ -92,7 +92,6 @@ public class UserService implements UserDetailsService {
 
     private void checkRootUserExist() {
         UserEntity rootUser = userRepository.findByEmail("user@ariss.com");
-
         if (rootUser != null) {
             rootUser.setExpired(true);
             userRepository.save(rootUser);
@@ -106,7 +105,7 @@ public class UserService implements UserDetailsService {
                             userEntity.setPassword(passwordEncoder.encode(activateDto.getPassword().toLowerCase(Locale.ROOT)));
                         },
                         () -> {
-                            throw new EntityNotFoundException("user not exist");
+                            throw new IllegalArgumentException("activation code not found");
                         }
                 );
     }
