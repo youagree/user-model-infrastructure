@@ -19,6 +19,7 @@ import ru.unit_techno.user.model.impl.entity.UserEntity;
 import ru.unit_techno.user.model.impl.exception.LoginAlreadyExistException;
 import ru.unit_techno.user.model.impl.mapper.UserMapper;
 import ru.unit_techno.user.model.impl.repository.UserRepository;
+import ru.unit_techno.user.model.impl.service.util.RandomCodeGenerator;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
@@ -60,7 +61,7 @@ public class UserService implements UserDetailsService {
 
         UserEntity createdUser = userMapper.toDomain(userDto);
         createdUser.setActive(false);
-        createdUser.setActivationCode(UUID.randomUUID().toString());
+        createdUser.setActivationCode(RandomCodeGenerator.generateRandomTemporaryCode());
         createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         createdUser.setCreated(new Timestamp(System.currentTimeMillis()));
 
@@ -81,7 +82,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void restoreUser(RestorePasswordDto restorePasswordDto) {
-        String activationCode = UUID.randomUUID().toString();
+        String activationCode = RandomCodeGenerator.generateRandomTemporaryCode();
         userRepository.updateActivationCode(activationCode, restorePasswordDto.getEmail());
         sendMessage(restorePasswordDto.getEmail(), activationCode);
     }
@@ -93,7 +94,6 @@ public class UserService implements UserDetailsService {
                     "Hello, %s! \n" +
                             "Welcome to Service. Your activation code is: %s",
                     email,
-                    //TODO поменять на 6 цифр
                     activationCode
             );
             mailService.send(email, "Activation code", message);
