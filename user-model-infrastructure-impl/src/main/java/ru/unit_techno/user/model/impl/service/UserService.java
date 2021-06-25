@@ -114,6 +114,7 @@ public class UserService implements UserDetailsService {
                 .ifPresentOrElse(userEntity -> {
                             userEntity.setActive(true);
                             userEntity.setPassword(passwordEncoder.encode(activateDto.getPassword().toLowerCase(Locale.ROOT)));
+                            userEntity.setActivationCode(null);
                             userRepository.save(userEntity);
                         },
                         () -> {
