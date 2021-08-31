@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <!-- Tables -->
-    <changeSet id="create-sequence-car" author="uberdev">
+    <changeSet id="create-sequence-users" author="uberdev">
         <preConditions onFail="MARK_RAN">
             <not>
                 <sequenceExists sequenceName="user_id_seq"/>
@@ -13,7 +13,7 @@
         <createSequence sequenceName="user_id_seq" incrementBy="50"/>
     </changeSet>
 
-    <changeSet id="create-table-cars" author="uberdev">
+    <changeSet id="create-table-users" author="uberdev">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="users"/>

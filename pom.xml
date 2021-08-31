@@ -15,8 +15,8 @@
     <description>module for work with user</description>
 
     <properties>
-        <spring-boot.version>2.4.4</spring-boot.version>
-        <org.projectlombok.version>1.18.10</org.projectlombok.version>
+        <spring-boot.version>2.5.2</spring-boot.version>
+        <org.projectlombok.version>1.18.20</org.projectlombok.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <springfox-swagger2>2.9.2</springfox-swagger2>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
@@ -60,14 +60,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <release>11</release>
+                    <source>11</source>
+                    <target>11</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>${org.mapstruct.version}</version>
+                            <version>1.4.2.Final</version>
                         </path>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -75,15 +76,21 @@
                             <version>${org.projectlombok.version}</version>
                         </path>
                         <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+                        <path>
                             <groupId>org.springframework.boot</groupId>
                             <artifactId>spring-boot-configuration-processor</artifactId>
-                            <version>${spring-boot.version}</version>
+                            <version>2.2.6.RELEASE</version>
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>
                         <arg>-Amapstruct.defaultComponentModel=spring</arg>
                         <arg>-Amapstruct.unmappedTargetPolicy=WARN</arg>
                         <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+                        <arg>-Amapstruct.verbose=true</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
